@@ -9,17 +9,23 @@ interface RaffleCardProps {
   raffle: Raffle;
 }
 
+const PLACEHOLDER_IMAGE_URL = 'https://placehold.co/600x300.png';
+const PLACEHOLDER_AI_HINT = "raffle prize";
+
 export default function RaffleCard({ raffle }: RaffleCardProps) {
+  const imageUrl = raffle.imageUrl || PLACEHOLDER_IMAGE_URL;
+  const imageHint = raffle.imageUrl ? (raffle.imageHint || PLACEHOLDER_AI_HINT) : PLACEHOLDER_AI_HINT;
+
   return (
     <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col overflow-hidden">
       <CardHeader className="p-0 relative">
         <Image
-          src={raffle.imageUrl}
+          src={imageUrl}
           alt={raffle.title}
           width={600}
           height={300} // Adjusted height for better aspect ratio
           className="object-cover w-full h-48" // Ensure image covers area
-          data-ai-hint={raffle.imageHint || "raffle prize"}
+          data-ai-hint={imageHint}
         />
       </CardHeader>
       <CardContent className="p-6 flex-grow">

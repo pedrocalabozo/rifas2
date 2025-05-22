@@ -21,7 +21,7 @@ async function getRaffleDetails(id: string): Promise<Raffle | null> {
       id: raffle.id_rifa,
       title: raffle.titulo,
       description: raffle.descripcion,
-      imageUrl: raffle.foto_url,
+      imageUrl: raffle.foto_url, // This can be null or empty string
       imageHint: raffle.data_ai_hint,
       ticketPrice: parseFloat(raffle.precio_boleto),
       status: raffle.estado,
@@ -34,6 +34,9 @@ async function getRaffleDetails(id: string): Promise<Raffle | null> {
   }
 }
 
+const PLACEHOLDER_IMAGE_URL = 'https://placehold.co/800x400.png';
+const PLACEHOLDER_AI_HINT = "prize giveaway";
+
 export default async function RafflePage({ params }: { params: { id: string } }) {
   const raffle = await getRaffleDetails(params.id);
 
@@ -41,17 +44,20 @@ export default async function RafflePage({ params }: { params: { id: string } })
     notFound();
   }
 
+  const imageUrl = raffle.imageUrl || PLACEHOLDER_IMAGE_URL;
+  const imageHint = raffle.imageUrl ? (raffle.imageHint || PLACEHOLDER_AI_HINT) : PLACEHOLDER_AI_HINT;
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <Card className="overflow-hidden shadow-xl">
         <CardHeader className="p-0">
           <Image
-            src={raffle.imageUrl}
+            src={imageUrl}
             alt={raffle.title}
             width={800}
             height={400}
             className="w-full object-cover aspect-[2/1]"
-            data-ai-hint={raffle.imageHint || "prize giveaway"}
+            data-ai-hint={imageHint}
             priority // Prioritize loading of main raffle image
           />
         </CardHeader>
