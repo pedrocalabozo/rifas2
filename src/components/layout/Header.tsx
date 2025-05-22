@@ -11,6 +11,7 @@ import { LogIn, UserCircle } from 'lucide-react';
 
 export default function Header() {
   const { data: session, status } = useSession();
+  console.log('Header.tsx: session status:', status, 'session user exists:', !!session?.user);
 
   return (
     <header className="bg-card shadow-md sticky top-0 z-50">
@@ -35,7 +36,10 @@ export default function Header() {
               <SignOutButton />
             </div>
           ) : (
-            <SignInButton />
+            <>
+              {console.log('Header.tsx: Rendering SignInButton')}
+              <SignInButton />
+            </>
           )}
         </div>
       </div>
