@@ -4,7 +4,7 @@ const db = mysql({
   config: { 
     host: 'mysql-pedrodev16.alwaysdata.net',
     port:  3306,
-    database: '=pedrodev16_p',
+    database: 'pedrodev16_p',
     user: '411793',
     password:'Lol2024..'
 
