@@ -2,10 +2,10 @@ import mysql from 'serverless-mysql';
 
 const db = mysql({
   config: { 
-    host: 'mysql-pedrodev16.alwaysdata.net',
+    host: 'mysql-rifaslista.alwaysdata.net',
     port:  3306,
-    database: 'pedrodev16_p',
-    user: '411793',
+    database: 'rifaslista_db',
+    user: '414486',
     password:'Lol2024..'
 
      // ssl: { // Opcional: para conexiones SSL, ej. con PlanetScale u otros proveedores de DBaaS
