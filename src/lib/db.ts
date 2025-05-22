@@ -2,11 +2,12 @@ import mysql from 'serverless-mysql';
 
 const db = mysql({
   config: { 
-    host: 'mysql-rifaslista.alwaysdata.net',
-    port:  3306,
-    database: 'rifaslista_db',
-    user: '414486',
-    password:'Lol2024..'
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+    database: process.env.DB_DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD
+
 
      // ssl: { // Opcional: para conexiones SSL, ej. con PlanetScale u otros proveedores de DBaaS
     //   rejectUnauthorized: true, 
