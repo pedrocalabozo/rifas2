@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import type { ExtendedUser } from '@/types'; // Or from next-auth if defined there
+import type { ExtendedUser } from '@/types'; 
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
@@ -23,7 +23,7 @@ const profileFormSchema = z.object({
   apellido: z.string().min(2, { message: 'El apellido debe tener al menos 2 caracteres.' }),
   telefono: z.string().min(7, { message: 'El teléfono debe ser válido.' }).regex(/^\+?[0-9\s-()]+$/, { message: 'Número de teléfono inválido.'}),
   numero_id: z.string().min(5, { message: 'La cédula/ID debe tener al menos 5 caracteres.' }),
-  email: z.string().email().optional(), // Email usually comes from Google and is not editable here
+  email: z.string().email().optional(), 
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -59,19 +59,39 @@ export default function ProfileForm({ user, onProfileUpdate }: ProfileFormProps)
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el perfil.');
+        let errorMessage = `Error ${response.status}: ${response.statusText}.`;
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+        } catch (jsonError) {
+            // If response is not JSON, try to get text.
+            try {
+                const textError = await response.text();
+                errorMessage = textError || errorMessage;
+            } catch (textParseError) {
+                // Stick with the initial status code and text.
+            }
+        }
+        throw new Error(errorMessage);
       }
       
       toast({
         title: 'Perfil Actualizado',
         description: 'Tu información ha sido guardada correctamente.',
       });
-      await onProfileUpdate(); // This should trigger session update
+      await onProfileUpdate(); 
     } catch (error) {
+      let userMessage = 'Ocurrió un error inesperado.';
+      if (error instanceof Error) {
+          userMessage = error.message;
+      }
+      // For true "Failed to fetch" (network errors), error.message might be "Failed to fetch"
+      if (error instanceof TypeError && error.message.toLowerCase().includes('failed to fetch')) {
+          userMessage = 'Error de red. Por favor, verifica tu conexión e inténtalo de nuevo.';
+      }
       toast({
-        title: 'Error',
-        description: (error as Error).message,
+        title: 'Error al actualizar',
+        description: userMessage,
         variant: 'destructive',
       });
     } finally {
