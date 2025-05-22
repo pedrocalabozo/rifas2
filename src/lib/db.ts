@@ -22,7 +22,7 @@ export async function query(queryString: string, values: any[] = []): Promise<an
     // No es necesario llamar a db.end() después de cada consulta en entornos serverless.
     return results;
   } catch (error) {
-    console.error("Error en la consulta a la base de datos:", error);
+    console.error("Error en la consulta a la base de datos:", process.env.DB_HOST, error);
     // Considera registrar errores de forma más segura o lanzar errores genéricos al cliente.
     throw new Error('Error al ejecutar la consulta en la base de datos.');
   }
