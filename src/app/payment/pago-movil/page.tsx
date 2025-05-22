@@ -9,6 +9,8 @@ import { ArrowLeft, Banknote, Smartphone } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 export default function PagoMovilPage() {
   const router = useRouter();
   const { toast } = useToast();

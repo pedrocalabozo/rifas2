@@ -96,18 +96,16 @@ export default async function RafflePage({ params }: { params: { id: string } })
 }
 
 export async function generateStaticParams() {
-  // Fetch all active raffle IDs to pre-render their pages
   try {
     const rafflesData = await query("SELECT id_rifa FROM Rifas WHERE estado = 'activa'") as any[];
     return rafflesData.map((raffle) => ({
       id: raffle.id_rifa.toString(),
     }));
   } catch (error) {
-    console.error("Failed to generate static params for raffles:", error);
-    return [];
+    console.error("Failed to generate static params for raffles during build:", error);
+    return []; // Return empty array on error to allow build to succeed
   }
 }
 
-// Ensure dynamic pages are also supported for new raffles not caught at build time
-export const dynamic = 'force-static'; // or 'auto' if some are truly dynamic
+export const dynamic = 'auto'; // Changed from 'force-static'
 export const revalidate = 3600; // Revalidate raffle details every hour

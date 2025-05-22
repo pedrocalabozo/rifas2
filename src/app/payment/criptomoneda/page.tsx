@@ -9,6 +9,8 @@ import { ArrowLeft, Bitcoin, Copy, Send } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 const cryptoAddress = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"; // Example BTC address
 
 export default function CriptomonedaPage() {
@@ -18,8 +20,12 @@ export default function CriptomonedaPage() {
   const [amountSent, setAmountSent] = useState(''); // User confirms amount in crypto
 
   const handleCopyAddress = () => {
-    navigator.clipboard.writeText(cryptoAddress);
-    toast({ title: "Dirección Copiada", description: "La dirección de pago ha sido copiada al portapapeles." });
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(cryptoAddress);
+      toast({ title: "Dirección Copiada", description: "La dirección de pago ha sido copiada al portapapeles." });
+    } else {
+      toast({ title: "Error", description: "No se pudo copiar al portapapeles.", variant: "destructive" });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

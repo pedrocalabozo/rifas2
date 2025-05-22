@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, CreditCard, DollarSign } from 'lucide-react';
+import { ArrowLeft, CreditCard, DollarSign, Copy as CopyIcon } from 'lucide-react'; // Renamed Copy import
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 const zinliEmail = "usuario.rifafacil@zinli.com"; // Example Zinli email
 
@@ -18,8 +20,12 @@ export default function ZinliPage() {
   const [monto, setMonto] = useState('');
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(zinliEmail);
-    toast({ title: "Email Copiado", description: "El email de Zinli ha sido copiado." });
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(zinliEmail);
+      toast({ title: "Email Copiado", description: "El email de Zinli ha sido copiado." });
+    } else {
+      toast({ title: "Error", description: "No se pudo copiar al portapapeles.", variant: "destructive" });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -52,7 +58,7 @@ export default function ZinliPage() {
             <div className="flex items-center gap-2 bg-background p-2 rounded">
               <code className="text-sm break-all flex-grow">{zinliEmail}</code>
               <Button size="icon" variant="ghost" onClick={handleCopyEmail} title="Copiar email">
-                <Copy className="h-4 w-4" />
+                <CopyIcon className="h-4 w-4" /> {/* Updated usage */}
               </Button>
             </div>
              <p className="mt-2 font-semibold">Por favor, transfiere el monto exacto de tu compra.</p>
