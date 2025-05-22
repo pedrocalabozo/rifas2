@@ -2,12 +2,12 @@ import mysql from 'serverless-mysql';
 
 const db = mysql({
   config: {
-    host: process.env.MYSQL_HOST,
-    database: process.env.MYSQL_DATABASE,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    port: parseInt(process.env.MYSQL_PORT || "3306", 10), // Ensure port is parsed as base 10
-    // ssl: { // Opcional: para conexiones SSL, ej. con PlanetScale u otros proveedores de DBaaS
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+    database: process.env.DB_DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+     // ssl: { // Opcional: para conexiones SSL, ej. con PlanetScale u otros proveedores de DBaaS
     //   rejectUnauthorized: true, 
     //   // ca: fs.readFileSync('/path/to/ca-certificate.pem').toString(), // Ejemplo de CA cert
     // },
