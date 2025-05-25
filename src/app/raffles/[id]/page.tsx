@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import RaffleParticipationForm from '@/components/raffles/RaffleParticipationForm';
@@ -21,7 +22,7 @@ async function getRaffleDetails(id: string): Promise<Raffle | null> {
       id: raffle.id_rifa,
       title: raffle.titulo,
       description: raffle.descripcion,
-      imageUrl: raffle.foto_url, // This can be null or empty string
+      imageUrl: raffle.foto_url, 
       imageHint: raffle.data_ai_hint,
       ticketPrice: parseFloat(raffle.precio_boleto),
       status: raffle.estado,
@@ -34,8 +35,8 @@ async function getRaffleDetails(id: string): Promise<Raffle | null> {
   }
 }
 
-const PLACEHOLDER_IMAGE_URL = 'https://placehold.co/800x400.png';
-const PLACEHOLDER_AI_HINT = "prize giveaway";
+const PAGE_PLACEHOLDER_IMAGE_URL = 'https://placehold.co/800x400.png';
+const PAGE_PLACEHOLDER_AI_HINT = "prize giveaway";
 
 export default async function RafflePage({ params }: { params: { id: string } }) {
   const raffle = await getRaffleDetails(params.id);
@@ -44,20 +45,34 @@ export default async function RafflePage({ params }: { params: { id: string } })
     notFound();
   }
 
-  const imageUrl = raffle.imageUrl || PLACEHOLDER_IMAGE_URL;
-  const imageHint = raffle.imageUrl ? (raffle.imageHint || PLACEHOLDER_AI_HINT) : PLACEHOLDER_AI_HINT;
+  let displayImageUrl = PAGE_PLACEHOLDER_IMAGE_URL;
+  let displayImageHint = PAGE_PLACEHOLDER_AI_HINT;
+
+  if (raffle.imageUrl) {
+    try {
+      // Check if it's an absolute URL and parsable
+      const parsedUrl = new URL(raffle.imageUrl);
+      if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
+        displayImageUrl = raffle.imageUrl;
+        displayImageHint = raffle.imageHint || PAGE_PLACEHOLDER_AI_HINT; // Use raffle's hint if its image is used
+      }
+    } catch (e) {
+      // raffle.imageUrl is not a valid absolute URL, stick to placeholder
+      console.warn(`Invalid raffle image URL on RafflePage: "${raffle.imageUrl}". Using placeholder.`);
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <Card className="overflow-hidden shadow-xl">
         <CardHeader className="p-0">
           <Image
-            src={imageUrl}
+            src={displayImageUrl}
             alt={raffle.title}
             width={800}
             height={400}
             className="w-full object-cover aspect-[2/1]"
-            data-ai-hint={imageHint}
+            data-ai-hint={displayImageHint}
             priority // Prioritize loading of main raffle image
           />
         </CardHeader>
@@ -103,9 +118,9 @@ export async function generateStaticParams() {
     }));
   } catch (error) {
     console.error("Failed to generate static params for raffles during build:", error);
-    return []; // Return empty array on error to allow build to succeed
+    return []; 
   }
 }
 
-export const dynamic = 'auto'; // Changed from 'force-static'
-export const revalidate = 3600; // Revalidate raffle details every hour
+export const dynamic = 'auto'; 
+export const revalidate = 3600; 
